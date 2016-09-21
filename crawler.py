@@ -73,28 +73,21 @@ for key,value in data.iteritems():
     if key % 6 == 0:
         item = {}
         name = data[key]
-        #result['data'][name] = {}
         item['name'] = data[key]
     elif key % 6 == 1:
-        #result['data'][name]['detail'] = data[key]
         item['detail'] = data[key]
     elif key % 6 == 2:
-        #result['data'][name]['hood'] = data[key]
         item['hood'] = data[key]
     elif key % 6 == 3:
-        #result['data'][name]['caliber'] = data[key]
         item['caliber'] = data[key]
     elif key % 6 == 4:
-        #result['data'][name]['water_price'] = data[key]
         item['water_price'] = {}
         item['water_price'][today] = data[key]
     elif key % 6 == 5:
-        #result['data'][name]['price'] = data[key]
         item['price'] = {}
         item['price'][today] = data[key]
-    #print item
     result['data'][name] = item
     #raw_input()
 
-#print jsonify({'result': result})
 print json.dumps(result, ensure_ascii=False)
+
