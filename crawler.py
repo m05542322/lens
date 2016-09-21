@@ -36,10 +36,7 @@ class MyHTMLParser(HTMLParser):
     def handle_data(self, data):
         if self.td and self.table_level == 1 and self.table_count <= 2:
             data = data.decode('big5').encode('utf-8').strip()
-            #if not data:
-            #    data = "Null"
             self.data = self.data + data
-            #print "Encountered some data  :", data
     def getData(self):
         return self.data
     def getResult(self):
