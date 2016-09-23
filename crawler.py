@@ -107,6 +107,7 @@ result['data'] = old_data
 result = json.dumps(result, ensure_ascii=False).encode('utf-8')
 
 #print result
+# write uptated data to result.json
 with open('result.json', 'w') as f:
     f.write(result)
 f.close()
