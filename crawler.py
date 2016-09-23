@@ -1,3 +1,6 @@
+#!/usr/bin/python
+
+
 from HTMLParser import HTMLParser
 import urllib2
 import re
@@ -50,57 +53,57 @@ url = 'http://www.avi.com.tw/single_lens/price-single-lens-canonef.htm'
 html = urllib2.urlopen(url).read()
 html = re.sub(r"<!.>", "", html)
 parser.feed(html)
-data = parser.getResult()
+new_data = parser.getResult()
 
 now = datetime.datetime.now()
 today = str(now.month) + "/" + str(now.day)
 
-result = {}
-result['dates'] = ''
-if result['dates']:
-    result['dates'] = result['dates'] + "," + today
-else:
-    result['dates'] = today
-
-result['data'] = {}
-my_key = 6
-while my_key < len(data) - 5: 
-    item = {}
-    
-    name = data[my_key].replace('\xe8\xa9\xb3', '').strip()
-    item['name'] = name
-    item['detail'] = data[my_key+1]
-    item['hood'] = data[my_key+2]
-    item['caliber'] = data[my_key+3]
-    item['water_price'] = {}
-    item['water_price'][today] = data[my_key+4]
-    item['price'] = {}
-    item['price'][today] = data[my_key+5]
-   
-    result['data'][name] = item
-    my_key = my_key + 6
-
-#print json.dumps(result, ensure_ascii=False)
-
-#raw_input()
+# need change to old data
+#result = {}
+#result['dates'] = []
+#result['dates'].append(today)
+#result['data'] = {}
 
 with open('result.json', 'r') as f:
-    input_data = f.read();   
-    input_data = json.loads(input_data);
+    input_data = f.read().decode("utf-8")
+    input_data = json.loads(input_data, encoding='utf-8');
+    #print json.dumps(input_data, ensure_ascii=False)
     old_dates = input_data['dates']
     old_data = input_data['data']
+    #print json.dumps(old_dates, ensure_ascii=False)
+    #print json.dumps(old_data, ensure_ascii=False)    
 f.close()
 
-print old_dates
+old_dates.append(today)
 
-#print json.dumps(old_data, ensure_ascii=False)
+i = 6
+while i < len(new_data) - 5: 
+    name = new_data[i].replace('\xe8\xa9\xb3', '').strip().decode('utf-8')
+    if name in old_data:
+        old_price = old_data[name]['price']
+        if today not in old_price:
+            old_price[today] = new_data[i+5].decode('utf-8')
+    else:  
+        item = {} 
+        item['name'] = name
+        item['detail'] = new_data[i+1].decode('utf-8')
+        item['hood'] = new_data[i+2].decode('utf-8')
+        item['caliber'] = new_data[i+3].decode('utf-8')
+        item['water_price'] = {}
+        item['water_price'][today] = new_data[i+4].decode('utf-8')
+        item['price'] = {}
+        item['price'][today] = new_data[i+5].decode('utf-8')
+        old_data[name] = item 
+    i = i + 6
 
-for key, value in old_data.iteritems():
-    if key == 'LCA1124':
-        print old_data[key]
+result = {}
+result['dates'] = old_dates
+result['data'] = old_data
 
-'''
-with open('result.json', 'w') as f:
-    f.write(json.dumps(result, ensure_ascii=False))
+result = json.dumps(result, ensure_ascii=False).encode('utf-8')
+
+print result
+#raw_input()
+with open('result-2.json', 'w') as f:
+    f.write(result)
 f.close()
-'''
