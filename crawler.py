@@ -83,6 +83,10 @@ while i < len(new_data) - 5:
         old_price = old_data[name]['price']
         if today not in old_price:
             old_price[today] = new_data[i+5].decode('utf-8')
+        old_water_price = old_data[name]['water_price']
+        if today not in old_water_price:
+            old_water_price[today] = new_data[i+4].decode('utf-8')
+
     else:
         item = {} 
         item['name'] = name
