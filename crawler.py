@@ -83,7 +83,7 @@ while i < len(new_data) - 5:
         old_price = old_data[name]['price']
         if today not in old_price:
             old_price[today] = new_data[i+5].decode('utf-8')
-    else:  
+    else:
         item = {} 
         item['name'] = name
         item['detail'] = new_data[i+1].decode('utf-8')
@@ -102,8 +102,7 @@ result['data'] = old_data
 
 result = json.dumps(result, ensure_ascii=False).encode('utf-8')
 
-print result
-#raw_input()
-with open('result-2.json', 'w') as f:
+#print result
+with open('result.json', 'w') as f:
     f.write(result)
 f.close()
