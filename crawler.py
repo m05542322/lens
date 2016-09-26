@@ -74,7 +74,8 @@ with open('result.json', 'r') as f:
     #print json.dumps(old_data, ensure_ascii=False)    
 f.close()
 
-old_dates.append(today)
+if today not in old_dates:
+    old_dates.append(today)
 
 i = 6
 while i < len(new_data) - 5: 
