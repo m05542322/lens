@@ -12,7 +12,6 @@ dir_path = os.path.dirname(os.path.realpath(__file__)) + '/'
 class MyHTMLParser(HTMLParser):
     def __init__(self):
         self.td = False
-        #self.a = False
         self.count = 0
         self.table_count = 0
         self.table_level = 0
@@ -25,8 +24,6 @@ class MyHTMLParser(HTMLParser):
         if tag == 'td' and self.table_level == 1 and self.table_count <= 2: 
             self.td = True
             self.data = ''
-        #if tag == 'a':
-        #    self.a = True
     def handle_endtag(self, tag):
         if tag == 'table' and self.table_count <= 2:
             self.table_level -= 1
@@ -37,10 +34,7 @@ class MyHTMLParser(HTMLParser):
             res = re.sub(r"\s+", " ", self.data)
             self.result[self.count] = res
             self.count += 1
-        #if tag == 'a':
-        #    self.a = False
     def handle_data(self, data):
-        #if self.td and self.table_level == 1 and self.table_count <= 2 and not self.a :
         if self.td and self.table_level == 1 and self.table_count <= 2 :
             data = data.decode('big5').encode('utf-8').strip()
             self.data += data
@@ -59,21 +53,17 @@ new_data = parser.getResult()
 now = datetime.datetime.now()
 today = str(now.month) + "/" + str(now.day)
 
-# need change to old data
-#result = {}
-#result['dates'] = []
-#result['dates'].append(today)
-#result['data'] = {}
-
-with open(dir_path + 'result.json', 'r') as f:
-    input_data = f.read().decode("utf-8")
-    input_data = json.loads(input_data, encoding='utf-8');
-    #print json.dumps(input_data, ensure_ascii=False)
-    old_dates = input_data['dates']
-    old_data = input_data['data']
-    #print json.dumps(old_dates, ensure_ascii=False)
-    #print json.dumps(old_data, ensure_ascii=False)    
-f.close()
+# check the file result.json exist or not
+if os.path.isfile(dir_path + 'result.json'):
+    with open(dir_path + 'result.json', 'r') as f:
+        input_data = f.read().decode("utf-8")
+        input_data = json.loads(input_data, encoding='utf-8');
+        old_dates = input_data['dates']
+        old_data = input_data['data']
+    f.close()
+else:
+    old_dates = []
+    old_data = {}
 
 if today not in old_dates:
     old_dates.append(today)
@@ -88,7 +78,6 @@ while i < len(new_data) - 5:
         old_water_price = old_data[name]['water_price']
         if today not in old_water_price:
             old_water_price[today] = new_data[i+4].decode('utf-8')
-
     else:
         item = {} 
         item['name'] = name
