@@ -1,11 +1,12 @@
 #!/usr/bin/python
-
-
 from HTMLParser import HTMLParser
 import urllib2
 import re
 import datetime
 import json
+import os
+
+dir_path = os.path.dirname(os.path.realpath(__file__)) + '/'
 
 # create a subclass and override the handler methods
 class MyHTMLParser(HTMLParser):
@@ -19,8 +20,8 @@ class MyHTMLParser(HTMLParser):
         HTMLParser.__init__(self)
     def handle_starttag(self, tag, attrs):
         if tag == 'table' and self.table_count <= 2:
-            self.table_level = self.table_level + 1
-            self.table_count = self.table_count + 1
+            self.table_level += 1
+            self.table_count += 1
         if tag == 'td' and self.table_level == 1 and self.table_count <= 2: 
             self.td = True
             self.data = ''
@@ -28,21 +29,21 @@ class MyHTMLParser(HTMLParser):
         #    self.a = True
     def handle_endtag(self, tag):
         if tag == 'table' and self.table_count <= 2:
-            self.table_level = self.table_level - 1
+            self.table_level -= 1
         if tag == 'td' and self.table_level == 1 and self.table_count <= 2: 
             self.td = False
             if not self.data.strip():
                 self.data = 'Null'
             res = re.sub(r"\s+", " ", self.data)
             self.result[self.count] = res
-            self.count = self.count + 1
+            self.count += 1
         #if tag == 'a':
         #    self.a = False
     def handle_data(self, data):
         #if self.td and self.table_level == 1 and self.table_count <= 2 and not self.a :
         if self.td and self.table_level == 1 and self.table_count <= 2 :
             data = data.decode('big5').encode('utf-8').strip()
-            self.data = self.data + data
+            self.data += data
     def getData(self):
         return self.data
     def getResult(self):
@@ -64,7 +65,7 @@ today = str(now.month) + "/" + str(now.day)
 #result['dates'].append(today)
 #result['data'] = {}
 
-with open('result.json', 'r') as f:
+with open(dir_path + 'result.json', 'r') as f:
     input_data = f.read().decode("utf-8")
     input_data = json.loads(input_data, encoding='utf-8');
     #print json.dumps(input_data, ensure_ascii=False)
@@ -99,7 +100,7 @@ while i < len(new_data) - 5:
         item['price'] = {}
         item['price'][today] = new_data[i+5].decode('utf-8')
         old_data[name] = item 
-    i = i + 6
+    i += 6
 
 result = {}
 result['dates'] = old_dates
@@ -109,6 +110,6 @@ result = json.dumps(result, ensure_ascii=False).encode('utf-8')
 
 #print result
 # write uptated data to result.json
-with open('result.json', 'w') as f:
+with open(dir_path + 'result.json', 'w') as f:
     f.write(result)
 f.close()
