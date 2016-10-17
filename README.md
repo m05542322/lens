@@ -1,4 +1,4 @@
 python 2.7
 
-drequire
+require
 	opepyxl
