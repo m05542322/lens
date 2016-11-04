@@ -66,6 +66,8 @@ else:
     old_data = {}
 
 if today not in old_dates:
+    if len(old_dates) > 20:
+        old_dates.pop(0)
     old_dates.append(today)
 
 i = 6
