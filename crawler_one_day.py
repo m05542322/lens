@@ -53,9 +53,9 @@ new_data = parser.getResult()
 now = datetime.datetime.now()
 today = str(now.month) + "/" + str(now.day)
 
-# check the file all_records.json exist or not
-if os.path.isfile(dir_path + 'all_records.json'):
-    with open(dir_path + 'all_records.json', 'r') as f:
+# check the file one_day_record.json exist or not
+if os.path.isfile(dir_path + 'one_day_record.json'):
+    with open(dir_path + 'one_day_record.json', 'r') as f:
         input_data = f.read().decode("utf-8")
         input_data = json.loads(input_data, encoding='utf-8');
         old_dates = input_data['dates']
@@ -66,7 +66,7 @@ else:
     old_data = {}
 
 if today not in old_dates:
-    if len(old_dates) > 20:
+    if len(old_dates) > 2:
         old_dates.pop(0)
     old_dates.append(today)
 
@@ -100,7 +100,7 @@ result['data'] = old_data
 result = json.dumps(result, ensure_ascii=False).encode('utf-8')
 
 #print result
-# write uptated data to all_records.json
-with open(dir_path + 'all_records.json', 'w') as f:
+# write uptated data to one_day_record.json
+with open(dir_path + 'one_day_record.json', 'w') as f:
     f.write(result)
 f.close()
